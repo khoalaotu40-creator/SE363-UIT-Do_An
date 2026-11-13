@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MarketPulse · Tài liệu vận hành</title>
+    <style>
+      :root { --ink:#07111f; --panel:#102137; --line:#203755; --text:#e8f1fc; --muted:#8fa7c3; --cyan:#22d3ee; --green:#34d399; --amber:#fbbf24; }
+      * { box-sizing:border-box; } html { scroll-behavior:smooth; }
+      body { margin:0; background:var(--ink); color:var(--text); font:15px/1.6 Inter,system-ui,sans-serif; }
+      .layout { display:grid; grid-template-columns:245px minmax(0,1fr); min-height:100vh; max-width:1280px; margin:auto; }
+      aside { position:sticky; top:0; height:100vh; padding:30px 22px; border-right:1px solid var(--line); background:#081525; }
+      .brand { font-size:20px; font-weight:800; } .brand b,.eyebrow { color:var(--cyan); }
+      .back { display:inline-block; margin:10px 0 28px; color:var(--muted); font-size:13px; text-decoration:none; }
+      nav { display:grid; gap:7px; } nav a { color:var(--muted); text-decoration:none; font-size:13px; } nav a:hover { color:var(--cyan); }
+      main { padding:44px clamp(22px,5vw,68px) 80px; } .eyebrow { font-size:11px; letter-spacing:.12em; font-weight:700; }
+      h1 { font-size:clamp(31px,5vw,46px); line-height:1.1; margin:8px 0 14px; } h2 { margin:48px 0 14px; font-size:23px; }
+      .lead { max-width:70ch; color:var(--muted); font-size:16px; } .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:25px; }
+      .card,.table { border:1px solid var(--line); border-radius:10px; background:var(--panel); } .card { padding:16px; }
+      .label { color:var(--muted); font-size:11px; letter-spacing:.08em; text-transform:uppercase; } .metric { font-size:22px; font-weight:750; margin:7px 0; }
+      .green { color:var(--green); } .amber { color:var(--amber); } code { color:#b7f4ff; background:#0b192b; padding:2px 5px; border-radius:4px; }
+      .table { overflow:auto; } table { width:100%; border-collapse:collapse; min-width:650px; } th,td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; } th { color:var(--cyan); font-size:11px; letter-spacing:.08em; } tr:last-child td { border-bottom:0; }
+      ol { max-width:75ch; padding-left:23px; } li { margin:8px 0; } .note { border-left:3px solid var(--cyan); padding:12px 15px; background:#0b192b; max-width:75ch; }
+      @media (max-width:800px) { .layout { display:block; } aside { position:static; height:auto; border-right:0; border-bottom:1px solid var(--line); } nav { display:flex; flex-wrap:wrap; gap:9px 18px; } .grid { grid-template-columns:1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside>
+        <div class="brand">Market<b>Pulse</b> docs</div>
+        <a class="back" href="/">← Về dashboard</a>
+        <nav aria-label="Mục lục">
+          <a href="#purpose">Mục đích</a><a href="#content">Phạm vi nội dung</a><a href="#sources">Nguồn & bằng chứng</a><a href="#workflow">Quy trình cập nhật</a><a href="#checks">Checklist xuất bản</a>
+        </nav>
+      </aside>
+      <main>
+        <p class="eyebrow">MARKETPULSE · CONTENT CONTROL</p>
+        <h1>Tài liệu kiểm soát nội dung</h1>
+        <p class="lead">Trang <code>/docs</code> là nguồn tham chiếu cho nội dung hiển thị trong dashboard MarketPulse: dữ liệu nào được phép trình bày, cách gắn nhãn mức độ tin cậy và cách rà soát trước khi cập nhật.</p>
+
+        <section id="purpose"><h2>Mục đích</h2><div class="grid"><article class="card"><div class="label">Chế độ vận hành</div><div class="metric green">Read-only</div><small>Dashboard chỉ hỗ trợ analyst review.</small></article><article class="card"><div class="label">Nội dung hiện tại</div><div class="metric amber">Demo</div><small>Không xem dữ liệu minh họa là market data thật.</small></article><article class="card"><div class="label">Hành động tự động</div><div class="metric">Tắt</div><small>Không có cơ chế gửi lệnh giao dịch.</small></article></div></section>
+
+        <section id="content"><h2>Phạm vi nội dung</h2><div class="table"><table><thead><tr><th>Khu vực</th><th>Nội dung được phép</th><th>Yêu cầu hiển thị</th></tr></thead><tbody><tr><td>Vĩ mô</td><td>Lịch công bố, actual/forecast/previous và cửa sổ rủi ro.</td><td>Nêu nguồn, múi giờ và trạng thái dữ liệu.</td></tr><tr><td>On-chain</td><td>Dòng nạp/rút, giao dịch lớn, thực thể đã có bằng chứng.</td><td>Không suy đoán danh tính ví không được xác nhận.</td></tr><tr><td>Tâm lý</td><td>Chỉ số sentiment, cường độ tin, chủ đề công khai.</td><td>Ghi khoảng thời gian, nguồn và phương pháp tính.</td></tr><tr><td>Cảnh báo</td><td>Tín hiệu cần analyst xem xét.</td><td>Gắn nhãn cảnh báo; không dùng ngôn ngữ khuyến nghị mua/bán.</td></tr></tbody></table></div></section>
+
+        <section id="sources"><h2>Nguồn & bằng chứng</h2><ol><li>Chỉ dùng nguồn được cấp phép hoặc dữ liệu demo có nhãn rõ ràng.</li><li>Lưu URL/tên nguồn, thời điểm thu thập, mã tài sản và phiên bản mô hình sentiment cho mỗi luồng thật.</li><li>Deduplicate nội dung, đối chiếu timestamp phát hành, và giữ nguyên nguyên văn nguồn khi cần điều tra.</li><li>Không đưa API key, thông tin cá nhân, log máy cục bộ hoặc dữ liệu chưa được phép lên dashboard hay GitHub.</li></ol></section>
+
+        <section id="workflow"><h2>Quy trình cập nhật</h2><ol><li>Sửa nội dung demo tại <code>web/index.html</code> hoặc dữ liệu mô phỏng tại <code>web/data/</code>.</li><li>Chạy dashboard cục bộ và kiểm tra màn hình liên quan.</li><li>Cập nhật trang này nếu phạm vi, nguồn, hay quy tắc hiển thị thay đổi.</li><li>Tạo pull request nêu rõ nội dung thay đổi và bước kiểm tra đã thực hiện.</li></ol><p class="note">Mọi nội dung hướng tới quyết định đầu tư phải được thay bằng tín hiệu trung lập: “cần analyst xem xét”.</p></section>
+
+        <section id="checks"><h2>Checklist trước khi xuất bản</h2><ol><li>Đúng nguồn, timestamp và nhãn demo/live.</li><li>Không có dữ liệu nhạy cảm, khóa bí mật hay dữ liệu chưa cấp phép.</li><li>Không có ngôn ngữ bảo đảm lợi nhuận hoặc lời khuyên giao dịch.</li><li>Dashboard tải được tại <code>/</code> và tài liệu tải được tại <code>/docs</code>.</li></ol></section>
+      </main>
+    </div>
+  </body>
+</html>
