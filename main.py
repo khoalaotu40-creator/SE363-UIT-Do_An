@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     # Alternative
     parser.add_argument('--win_size', type=int, default=100)
-    parser.add_argument('--patch_size', type=list, default=[5])
+    parser.add_argument('--patch_size', type=str, default='5', help='comma-separated patch sizes, e.g. 3,5')
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--loss_fuc', type=str, default='MSE')
     parser.add_argument('--n_heads', type=int, default=1)
@@ -67,9 +67,9 @@ if __name__ == '__main__':
     parser.add_argument('--rec_timeseries', action='store_true', default=True)
     
     
-    parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
+    parser.add_argument('--use_gpu', type=str2bool, default=True, help='use gpu: True or False')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
-    parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=True)
+    parser.add_argument('--use_multi_gpu', type=str2bool, default=False, help='use multiple GPUs: True or False')
     parser.add_argument('--devices', type=str, default='0,1,2,3',help='device ids of multile gpus')
 
     # Default
@@ -79,16 +79,16 @@ if __name__ == '__main__':
     parser.add_argument('--input_c', type=int, default=9)
     parser.add_argument('--output_c', type=int, default=9)
     parser.add_argument('--k', type=int, default=3)
-    parser.add_argument('--dataset', type=str, default='credit')
+    parser.add_argument('--dataset', type=str, default='FINANCE_NEWS')
     parser.add_argument('--mode', type=str, default='train', choices=['train', 'test'])
-    parser.add_argument('--data_path', type=str, default='./dataset/creditcard_ts.csv')
+    parser.add_argument('--data_path', type=str, default='FINANCE_NEWS')
     parser.add_argument('--model_save_path', type=str, default='checkpoints')
 
     parser.add_argument('--anormly_ratio', type=float, default=4.00)
 
     config = parser.parse_args()
     args = vars(config)
-    config.patch_size = [int(patch_index) for patch_index in config.patch_size]
+    config.patch_size = [int(patch_index.strip()) for patch_index in config.patch_size.split(',')]
     
     
     if config.dataset == 'UCR':
@@ -113,7 +113,8 @@ if __name__ == '__main__':
         config.gpu = config.device_ids[0]
     
     
-    sys.stdout = Logger("result/"+ config.data_path +".log", sys.stdout)
+    os.makedirs("result", exist_ok=True)
+    sys.stdout = Logger(os.path.join("result", f"{config.dataset}.log"), sys.stdout)
     if config.mode == 'train':
         print("\n\n")
         print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))

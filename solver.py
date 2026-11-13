@@ -31,8 +31,8 @@ class EarlyStopping:
         self.best_score = None
         self.best_score2 = None
         self.early_stop = False
-        self.val_loss_min = np.Inf
-        self.val_loss2_min = np.Inf
+        self.val_loss_min = np.inf
+        self.val_loss2_min = np.inf
         self.delta = delta
         self.dataset = dataset_name
 
@@ -191,7 +191,8 @@ class Solver(object):
     def test(self):
         self.model.load_state_dict(
             torch.load(
-                os.path.join(str(self.model_save_path), str(self.data_path) + '_checkpoint.pth')))
+                os.path.join(str(self.model_save_path), str(self.data_path) + '_checkpoint.pth'),
+                map_location=self.device))
         self.model.eval()
         temperature = 50
 
@@ -299,6 +300,7 @@ class Solver(object):
 
         pred = (test_energy > thresh).astype(int)
         gt = test_labels.astype(int)
+        raw_pred = pred.copy()
         
         matrix = [self.index]
         scores_simple = combine_all_evaluation_scores(pred, gt, test_energy)
@@ -337,10 +339,23 @@ class Solver(object):
         precision, recall, f_score, support = precision_recall_fscore_support(gt, pred, average='binary')
         print("Accuracy : {:0.4f}, Precision : {:0.4f}, Recall : {:0.4f}, F-score : {:0.4f} ".format(accuracy, precision, recall, f_score))
         
-        if self.data_path == 'UCR' or 'UCR_AUG':
-            import csv
-            with open('result/'+self.data_path+'.csv', 'a+') as f:
-                writer = csv.writer(f)
-                writer.writerow(matrix)
+        # Save the unadjusted score and both predictions so they can be plotted
+        # without re-running inference.  Point-adjusted predictions are retained
+        # only for reproducing the paper's reported F1 protocol.
+        os.makedirs('result', exist_ok=True)
+        np.savez(
+            os.path.join('result', f'{self.data_path}_scores.npz'),
+            scores=test_energy,
+            labels=gt,
+            raw_predictions=raw_pred,
+            adjusted_predictions=pred,
+            threshold=thresh,
+        )
+        print(f"Saved visualization data to result/{self.data_path}_scores.npz")
+
+        import csv
+        with open('result/'+self.data_path+'.csv', 'a+', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(matrix)
 
         return accuracy, precision, recall, f_score

@@ -180,6 +180,43 @@ class SMDSegLoader(object):
                               index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
                 self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
 
+
+class SyntheticSegLoader(SMDSegLoader):
+    """Small, labeled local demo dataset using the same .npy layout as SMD."""
+    def __init__(self, data_path, win_size, step, mode="train"):
+        self.mode = mode
+        self.step = step
+        self.win_size = win_size
+        self.scaler = StandardScaler()
+        data = np.load(data_path + "/SYNTHETIC_train.npy")
+        self.scaler.fit(data)
+        self.train = self.scaler.transform(data)
+        test_data = np.load(data_path + "/SYNTHETIC_test.npy")
+        self.test = self.scaler.transform(test_data)
+        self.val = self.train[int(len(self.train) * 0.8):]
+        self.test_labels = np.load(data_path + "/SYNTHETIC_test_label.npy")
+
+
+class FinanceNewsSegLoader(SMDSegLoader):
+    """Financial market + news-sentiment features stored in the standard .npy layout.
+
+    Channels are: log return, realised volatility, relative volume, sentiment,
+    sentiment dispersion, and news intensity.  Labels mark injected or
+    independently verified market-news events; they are never used for training.
+    """
+    def __init__(self, data_path, win_size, step, mode="train"):
+        self.mode = mode
+        self.step = step
+        self.win_size = win_size
+        self.scaler = StandardScaler()
+        train = np.load(data_path + "/FINANCE_NEWS_train.npy")
+        self.scaler.fit(train)
+        self.train = self.scaler.transform(train)
+        test = np.load(data_path + "/FINANCE_NEWS_test.npy")
+        self.test = self.scaler.transform(test)
+        self.val = self.train[int(len(self.train) * 0.8):]
+        self.test_labels = np.load(data_path + "/FINANCE_NEWS_test_label.npy")
+
         
         
 class UCRSegLoader(object):
@@ -503,6 +540,10 @@ class SWATSegLoader(Dataset):
 def get_loader_segment(index, data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD'):
     if (dataset == 'SMD'):
         dataset = SMDSegLoader(data_path, win_size, 1, mode)
+    elif (dataset == 'SYNTHETIC'):
+        dataset = SyntheticSegLoader(data_path, win_size, 1, mode)
+    elif (dataset == 'FINANCE_NEWS'):
+        dataset = FinanceNewsSegLoader(data_path, win_size, 1, mode)
     elif (dataset == 'MSL'):
         dataset = MSLSegLoader(data_path, win_size, 1, mode)
     elif (dataset == 'SMAP'):
@@ -531,6 +572,11 @@ def get_loader_segment(index, data_path, batch_size, win_size=100, step=100, mod
     data_loader = DataLoader(dataset=dataset,
                              batch_size=batch_size,
                              shuffle=shuffle,
-                             num_workers=8,
-                             drop_last=True)
+                             # Multiprocessing is fragile and slow to start on Windows;
+                             # keeping this at zero makes the local classroom setup reliable.
+                             num_workers=0,
+                             # Threshold/replay loaders may contain fewer windows than a
+                             # training batch.  Retain their final partial batch so a
+                             # short intraday stream still produces alerts.
+                             drop_last=False)
     return data_loader

@@ -1,0 +1,23 @@
+# Python environments and generated caches
+.venv/
+.uv-cache/
+.mplconfig/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Local datasets, trained weights, and generated experiment output
+dataset/
+checkpoints/
+result/
+*.npz
+*.pth
+
+# Local command logs
+*.log
+*.err
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
